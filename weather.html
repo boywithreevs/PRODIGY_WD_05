@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast</title>
+    <style>
+        @keyframes smoothBackground {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url('https://www.adventurebikerider.com/wp-content/uploads/2017/10/tumblr_o27c7fByaO1tchrkco1_500.gif') no-repeat center center fixed;
+            background-size: cover;
+            animation: smoothBackground 10s linear infinite;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px #1e90ff, 0 0 30px #1e90ff;
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #1e90ff;
+            text-shadow: 0 0 10px #1e90ff;
+        }
+        .input-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        input {
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: 1px solid #1e90ff;
+            background-color: #222;
+            color: #fff;
+        }
+        .neon-button {
+            border: none;
+            outline: none;
+            color: white;
+            background: #1e90ff;
+            padding: 10px 20px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+            font-size: 1.2em;
+            border-radius: 5px;
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #1e90ff, 0 0 20px #1e90ff, 0 0 25px #1e90ff;
+        }
+        .neon-button:hover {
+            box-shadow: 0 0 20px #1e90ff, 0 0 30px #1e90ff, 0 0 40px #1e90ff, 0 0 50px #1e90ff;
+        }
+        .weather-display {
+            font-size: 1.5em;
+            margin-top: 20px;
+            text-shadow: 0 0 10px #1e90ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sky Cast</h1>
+        <div class="input-container">
+            <input type="text" id="locationInput" placeholder="Enter location">
+            <button id="fetchWeatherButton" class="neon-button">Get Weather</button>
+        </div>
+        <div id="weatherDisplay" class="weather-display"></div>
+    </div>
+    <script>
+        const apiKey = 'c1ce9b24d8e0d5847a5971ea37de3d94';
+        const fetchWeatherButton = document.getElementById('fetchWeatherButton');
+        const locationInput = document.getElementById('locationInput');
+        const weatherDisplay = document.getElementById('weatherDisplay');
+
+        async function fetchWeather(location) {
+            const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=metric`;
+            const response = await fetch(apiUrl);
+            if (response.ok) {
+                const data = await response.json();
+                displayWeather(data);
+            } else {
+                weatherDisplay.textContent = 'Error: Unable to fetch weather data';
+            }
+        }
+
+        function displayWeather(data) {
+            const { name, main, weather, wind } = data;
+            weatherDisplay.innerHTML = `
+                <h2>${name}</h2>
+                <p>${weather[0].description}</p>
+                <p>Temperature: ${main.temp} °C</p>
+                <p>Humidity: ${main.humidity}%</p>
+                <p>Wind Speed: ${wind.speed} m/s</p>
+            `;
+        }
+
+        fetchWeatherButton.addEventListener('click', () => {
+            const location = locationInput.value;
+            if (location) {
+                fetchWeather(location);
+            } else {
+                weatherDisplay.textContent = 'Please enter a location';
+            }
+        });
+    </script>
+</body>
+</html>
+
